@@ -1,1 +1,618 @@
-<h1>Site da Conta B</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mariana, com todo o meu amor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CONFIGURAÇÕES GERAIS E TEMA --- */
+        :root {
+            --cor-fundo: #0a1024; /* Azul noite profundo */
+            --cor-destaque: #f0e68c; /* Amarelo/dourado suave (Khaki) */
+            --cor-texto: #ffffff;
+            --cor-sombra-destaque: rgba(240, 230, 140, 0.5);
+            --cor-vermelho: #c0392b;
+            --cor-vermelho-sombra: #88281e;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* --- FUNDO ESTRELADO ANIMADO --- */
+        .star-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: transparent;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+
+        /* --- ANIMAÇÃO DE ROLAGEM --- */
+        .hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- ESTRUTURA E TÍTULOS --- */
+        header, section {
+            padding: 50px 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--cor-destaque);
+            text-shadow: 0 0 10px var(--cor-sombra-destaque);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 10vw, 4.5rem);
+            margin: 0;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
+        }
+
+        /* --- PLAYER DO SPOTIFY --- */
+        iframe {
+            max-width: 90%;
+            box-shadow: 0 0 20px var(--cor-sombra-destaque);
+        }
+
+        /* --- GALERIA DE FOTOS E VÍDEOS --- */
+        #gallery-container {
+            width: 100%;
+            max-width: 380px;
+            margin: 20px auto;
+            padding: 0;
+        }
+
+        .photo-gallery {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            overflow: hidden;
+            border-radius: 15px;
+            border: 3px solid var(--cor-destaque);
+            box-shadow: 0 0 20px var(--cor-sombra-destaque);
+            user-select: none;
+            cursor: grab;
+            background-color: #000; /* Fundo preto para o caso de o vídeo demorar a carregar */
+        }
+
+        .photo-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .photo-slide.active {
+            opacity: 1;
+        }
+
+        .photo-slide img,
+        .photo-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: #555;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background-color: var(--cor-destaque);
+        }
+
+        /* --- CRONÓMETRO --- */
+        #timer {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: var(--cor-destaque);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px 25px;
+            border: 1px solid rgba(240, 230, 140, 0.2);
+        }
+
+        #timer div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #timer span {
+            font-weight: bold;
+            font-size: clamp(1.5rem, 6vw, 2.2rem);
+        }
+        
+        #timer .label {
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            color: #ccc;
+        }
+
+        /* --- SECÇÃO DA LUA --- */
+        .moon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .moon-emoji {
+            font-size: 120px;
+            filter: drop-shadow(0 0 15px #ffffff);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .moon-phase-name {
+            margin-top: 10px;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--cor-destaque);
+        }
+
+        /* --- ESTATÍSTICAS DA JORNADA --- */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 220px;
+            flex-grow: 1;
+            border: 1px solid rgba(240, 230, 140, 0.2);
+        }
+
+        /* --- CAIXA DE MENSAGEM --- */
+        .form-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(240, 230, 140, 0.2);
+            border-radius: 15px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        .form-wrapper h2 {
+            margin-top: 0;
+            padding-bottom: 15px;
+        }
+
+        #message-section iframe {
+            border: none;
+            box-shadow: none;
+            width: 100%;
+        }
+
+        /* --- BOTÃO SECRETO E VÍDEO --- */
+        #secret-button {
+            background-color: var(--cor-vermelho);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px var(--cor-vermelho-sombra);
+            transition: all 0.1s ease-out;
+        }
+
+        #secret-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px var(--cor-vermelho-sombra);
+        }
+
+        #video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #video-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        #video-container video {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        #close-video {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* --- RODAPÉ --- */
+        footer {
+            padding: 30px;
+            margin-top: 50px;
+            font-style: italic;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas para o confete -->
+    <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1001; pointer-events: none;"></canvas>
+
+    <div class="star-background"></div>
+
+    <header class="hidden">
+        <h2>A trilha sonora do nosso amor...</h2>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5B4611SCn4puXahrf7rqkj?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </header>
+
+    <main>
+        <section class="title-section hidden">
+            <h1>Mariana & Nycolas</h1>
+        </section>
+
+        <section id="gallery-container" class="hidden">
+            <div class="photo-gallery">
+                <!-- 
+                    COLOQUE AS SUAS FOTOS E VÍDEOS AQUI:
+                    - Para as fotos, troque os links "https://placehold.co/...".
+                    - Para os vídeos, troque os links "https://storage.googleapis.com/..." pelo link direto do seu vídeo.
+                -->
+                <!-- Foto 1 -->
+                <div class="photo-slide active">
+                    <img src="assets/mariex1.jpg" alt="Foto do casal 1">
+                </div>
+                <!-- Vídeo 1 -->
+                <div class="photo-slide">
+                    <video src="assets/mariex4.mp4" loop muted playsinline></video>
+                </div>
+                <!-- Foto 2 -->
+                <div class="photo-slide">
+                    <img src="assets/mariex2.jpg" alt="Foto do casal 2">
+                </div>
+                <!-- Vídeo 2 -->
+                <div class="photo-slide">
+                    <video src="assets/mariex5.mp4" loop muted playsinline></video>
+                </div>
+                <!-- Foto 3 -->
+                <div class="photo-slide">
+                    <img src="assets/mariex3.jpg" alt="Foto do casal 3">
+                </div>
+            </div>
+            <div class="dots-container"></div>
+        </section>
+
+        <section id="timer-section" class="hidden">
+            <h2>Juntos há:</h2>
+            <div id="timer">
+                <div><span id="years">0</span><span class="label">Anos</span></div>
+                <div><span id="months">0</span><span class="label">Meses</span></div>
+                <div><span id="days">0</span><span class="label">Dias</span></div>
+                <div><span id="hours">0</span><span class="label">Horas</span></div>
+                <div><span id="minutes">0</span><span class="label">Minutos</span></div>
+                <div><span id="seconds">0</span><span class="label">Segundos</span></div>
+            </div>
+        </section>
+
+        <section id="moon-section" class="hidden">
+            <h2>A lua que nos abençoou</h2>
+            <p>No dia em que tudo começou, a lua estava assim:</p>
+            <div class="moon-container">
+                <p class="moon-emoji">🌕</p>
+                <p class="moon-phase-name">Lua Cheia</p>
+            </div>
+        </section>
+
+        <section id="journey-section" class="hidden">
+            <h2>A nossa jornada pelo universo</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <h3>Amanheceres Juntos</h3>
+                    <p id="sunrises">0</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Luas Cheias que Vimos</h3>
+                    <p id="full-moons">0</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Distância que a Terra viajou connosco</h3>
+                    <p><span id="distance">0</span> km</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="message-section" class="hidden">
+            <div class="form-wrapper">
+                <h2>Deixe uma mensagem, meu amor</h2>
+                <iframe data-tally-src="https://tally.so/embed/3EoLao?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="280" frameborder="0" marginheight="0" marginwidth="0" title="Deixe uma mensagem, meu amor..."></iframe>
+            </div>
+        </section>
+
+        <!-- Secção do Botão Secreto -->
+        <section id="secret-section" class="hidden">
+            <button id="secret-button">Não aperte!</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Feito com cada batida do meu coração para si, Mariana. Amo-te!</p>
+    </footer>
+
+    <!-- Overlay do Vídeo -->
+    <div id="video-overlay">
+        <div id="video-container">
+            <span id="close-video">&times;</span>
+            <video id="secret-video" src="https://cdn.discordapp.com/attachments/777570599890583583/1395480874132439090/ssstik.io_1752773771658.mp4?ex=687a9a57&is=687948d7&hm=6cfc3cbd7817d486f411c8ba3cbe8c52af94cf9e62f6424c6a784a7b5faab032&" controls loop></video>
+        </div>
+    </div>
+
+    <!-- Script do Tally -->
+    <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+    
+    <!-- Script do Confete -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- ANIMAÇÃO DE ROLAGEM ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+
+            // --- FUNDO ESTRELADO ---
+            function createStars() {
+                const container = document.querySelector('.star-background');
+                const starCount = 200;
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    const size = Math.random() * 2.5 + 0.5;
+                    star.style.width = `${size}px`;
+                    star.style.height = star.style.width;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 4}s`;
+                    star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                    container.appendChild(star);
+                }
+            }
+            createStars();
+
+            // --- GALERIA DE FOTOS E VÍDEOS (CARROSSEL) ---
+            const slides = document.querySelectorAll('.photo-slide');
+            if (slides.length > 0) {
+                const dotsContainer = document.querySelector('.dots-container');
+                const gallery = document.querySelector('.photo-gallery');
+                let currentSlide = 0;
+                let slideInterval;
+                let startX = 0;
+
+                slides.forEach((_, index) => {
+                    const dot = document.createElement('span');
+                    dot.classList.add('dot');
+                    if (index === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => goToSlide(index));
+                    dotsContainer.appendChild(dot);
+                });
+                const dots = document.querySelectorAll('.dot');
+
+                function goToSlide(slideIndex) {
+                    const previousSlide = slides[currentSlide];
+                    const videoInPrevious = previousSlide.querySelector('video');
+                    if (videoInPrevious) {
+                        videoInPrevious.pause();
+                        videoInPrevious.currentTime = 0;
+                    }
+
+                    previousSlide.classList.remove('active');
+                    dots[currentSlide].classList.remove('active');
+                    
+                    currentSlide = (slideIndex + slides.length) % slides.length;
+
+                    const newSlide = slides[currentSlide];
+                    const videoInNew = newSlide.querySelector('video');
+                    if (videoInNew) {
+                        videoInNew.muted = true;
+                        videoInNew.play().catch(error => console.log("Erro ao tentar tocar o vídeo:", error));
+                    }
+
+                    newSlide.classList.add('active');
+                    dots[currentSlide].classList.add('active');
+                    resetInterval();
+                }
+
+                function resetInterval() {
+                    clearInterval(slideInterval);
+                    slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
+                }
+
+                gallery.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    clearInterval(slideInterval);
+                }, { passive: true });
+
+                gallery.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    if (startX - endX > 50) {
+                        goToSlide(currentSlide + 1);
+                    } else if (endX - startX > 50) {
+                        goToSlide(currentSlide - 1);
+                    } else {
+                        resetInterval();
+                    }
+                });
+                
+                resetInterval();
+                const firstVideo = slides[0].querySelector('video');
+                if (firstVideo) {
+                    firstVideo.muted = true;
+                    firstVideo.play().catch(error => console.log("Erro ao tentar tocar o vídeo inicial:", error));
+                }
+            }
+
+            // --- CRONÓMETRO E CÁLCULOS ASTRONÓMICOS ---
+            const startDate = new Date('2025-05-13T00:00:00');
+            function updateCounters() {
+                const now = new Date();
+                let diff = now - startDate;
+                if (diff < 0) diff = 0; 
+                const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+                let tempDate = new Date(startDate);
+                let years = now.getFullYear() - tempDate.getFullYear();
+                let months = now.getMonth() - tempDate.getMonth();
+                let days = now.getDate() - tempDate.getDate();
+                if (days < 0) { months--; const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0); days += prevMonth.getDate(); }
+                if (months < 0) { years--; months += 12; }
+                if (diff === 0) { years = 0; months = 0; days = 0; }
+                const s = Math.floor(diff / 1000) % 60;
+                const m = Math.floor(diff / (1000 * 60)) % 60;
+                const h = Math.floor(diff / (1000 * 60 * 60)) % 24;
+                document.getElementById('years').innerText = years;
+                document.getElementById('months').innerText = months;
+                document.getElementById('days').innerText = days;
+                document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+                document.getElementById('sunrises').innerText = totalDays.toLocaleString('pt-BR');
+                const fullMoonDates = [ new Date('2025-05-12'), new Date('2025-06-11'), new Date('2025-07-10') ];
+                const fullMoonsWitnessed = fullMoonDates.filter(d => d > startDate && d < now).length;
+                document.getElementById('full-moons').innerText = fullMoonsWitnessed;
+                const earthSpeedKms = 29.78;
+                const totalSeconds = diff / 1000;
+                const distanceTraveled = totalSeconds * earthSpeedKms;
+                document.getElementById('distance').innerText = Math.round(distanceTraveled).toLocaleString('pt-BR');
+            }
+            setInterval(updateCounters, 1000);
+            updateCounters();
+
+            // --- CÓDIGO PARA O BOTÃO SECRETO ---
+            const secretButton = document.getElementById('secret-button');
+            const videoOverlay = document.getElementById('video-overlay');
+            const secretVideo = document.getElementById('secret-video');
+            const closeVideoButton = document.getElementById('close-video');
+
+            function fireConfetti() {
+                const canvas = document.getElementById('confetti-canvas');
+                const myConfetti = confetti.create(canvas, {
+                    resize: true,
+                    useWorker: true
+                });
+                myConfetti({
+                    particleCount: 150,
+                    spread: 180,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            secretButton.addEventListener('click', function() {
+                fireConfetti();
+                videoOverlay.style.display = 'flex';
+                secretVideo.muted = false;
+                secretVideo.play().catch(error => {
+                    console.log("Autoplay com som falhou, tentando mudo. Erro:", error);
+                    secretVideo.muted = true;
+                    secretVideo.play();
+                });
+            });
+
+            closeVideoButton.addEventListener('click', function() {
+                videoOverlay.style.display = 'none';
+                secretVideo.pause();
+                secretVideo.currentTime = 0;
+            });
+        });
+    </script>
+</body>
+</html>
