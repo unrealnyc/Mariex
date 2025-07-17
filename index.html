@@ -11,317 +11,101 @@
     <style>
         /* --- CONFIGURAÇÕES GERAIS E TEMA --- */
         :root {
-            --cor-fundo: #0a1024; /* Azul noite profundo */
-            --cor-destaque: #f0e68c; /* Amarelo/dourado suave (Khaki) */
+            --cor-fundo: #0a1024;
+            --cor-destaque: #f0e68c;
             --cor-texto: #ffffff;
             --cor-sombra-destaque: rgba(240, 230, 140, 0.5);
             --cor-vermelho: #c0392b;
             --cor-vermelho-sombra: #88281e;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
+        html { scroll-behavior: smooth; }
         body {
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            overflow-x: hidden;
+            margin: 0; padding: 0; text-align: center; overflow-x: hidden;
         }
 
         /* --- FUNDO ESTRELADO ANIMADO --- */
-        .star-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: transparent;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        @keyframes twinkle {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.5); }
-        }
-
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle 4s infinite ease-in-out;
-        }
+        .star-background { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: transparent; z-index: -1; overflow: hidden; }
+        @keyframes twinkle { 0% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.5); } }
+        .star { position: absolute; background-color: white; border-radius: 50%; animation: twinkle 4s infinite ease-in-out; }
 
         /* --- ANIMAÇÃO DE ROLAGEM --- */
-        .hidden {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-            will-change: opacity, transform;
-        }
-
-        .fade-in {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; will-change: opacity, transform; }
+        .fade-in { opacity: 1; transform: translateY(0); }
 
         /* --- ESTRUTURA E TÍTULOS --- */
-        header, section {
-            padding: 50px 20px;
-            max-width: 800px;
-            margin: 40px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
-
-        h1, h2 {
-            font-family: 'Playfair Display', serif;
-            color: var(--cor-destaque);
-            text-shadow: 0 0 10px var(--cor-sombra-destaque);
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 10vw, 4.5rem);
-            margin: 0;
-        }
-
-        h2 {
-            font-size: clamp(1.8rem, 8vw, 2.5rem);
-        }
+        header, section { padding: 50px 20px; max-width: 800px; margin: 40px auto; display: flex; flex-direction: column; align-items: center; gap: 25px; }
+        h1, h2 { font-family: 'Playfair Display', serif; color: var(--cor-destaque); text-shadow: 0 0 10px var(--cor-sombra-destaque); }
+        h1 { font-size: clamp(2.5rem, 10vw, 4.5rem); margin: 0; }
+        h2 { font-size: clamp(1.8rem, 8vw, 2.5rem); }
 
         /* --- PLAYER DO SPOTIFY --- */
-        iframe {
-            max-width: 90%;
-            box-shadow: 0 0 20px var(--cor-sombra-destaque);
-        }
+        iframe { max-width: 90%; box-shadow: 0 0 20px var(--cor-sombra-destaque); }
 
         /* --- GALERIA DE FOTOS E VÍDEOS --- */
-        #gallery-container {
-            width: 100%;
-            max-width: 380px;
-            margin: 20px auto;
-            padding: 0;
-        }
-
-        .photo-gallery {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 9 / 16;
-            overflow: hidden;
-            border-radius: 15px;
-            border: 3px solid var(--cor-destaque);
-            box-shadow: 0 0 20px var(--cor-sombra-destaque);
-            user-select: none;
-            cursor: grab;
-            background-color: #000; /* Fundo preto para o caso de o vídeo demorar a carregar */
-        }
-
-        .photo-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .photo-slide.active {
-            opacity: 1;
-        }
-
-        .photo-slide img,
-        .photo-slide video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .dots-container {
-            display: flex;
-            justify-content: center;
-            padding: 15px 0;
-        }
-
-        .dot {
-            height: 12px;
-            width: 12px;
-            margin: 0 5px;
-            background-color: #555;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.6s ease;
-            cursor: pointer;
-        }
-
-        .dot.active {
-            background-color: var(--cor-destaque);
-        }
+        #gallery-container { width: 100%; max-width: 380px; margin: 20px auto; padding: 0; }
+        .photo-gallery { position: relative; width: 100%; aspect-ratio: 9 / 16; overflow: hidden; border-radius: 15px; border: 3px solid var(--cor-destaque); box-shadow: 0 0 20px var(--cor-sombra-destaque); user-select: none; cursor: grab; background-color: #000; }
+        .photo-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
+        .photo-slide.active { opacity: 1; }
+        .photo-slide img, .photo-slide video { width: 100%; height: 100%; object-fit: cover; }
+        .dots-container { display: flex; justify-content: center; padding: 15px 0; }
+        .dot { height: 12px; width: 12px; margin: 0 5px; background-color: #555; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease; cursor: pointer; }
+        .dot.active { background-color: var(--cor-destaque); }
 
         /* --- CRONÓMETRO --- */
-        #timer {
-            font-size: clamp(1rem, 4vw, 1.5rem);
-            color: var(--cor-destaque);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px 25px;
-            border: 1px solid rgba(240, 230, 140, 0.2);
-        }
-
-        #timer div {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #timer span {
-            font-weight: bold;
-            font-size: clamp(1.5rem, 6vw, 2.2rem);
-        }
-        
-        #timer .label {
-            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-            font-family: 'Poppins', sans-serif;
-            text-transform: uppercase;
-            color: #ccc;
-        }
+        #timer { font-size: clamp(1rem, 4vw, 1.5rem); color: var(--cor-destaque); background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px 25px; border: 1px solid rgba(240, 230, 140, 0.2); }
+        #timer div { display: flex; flex-direction: column; }
+        #timer span { font-weight: bold; font-size: clamp(1.5rem, 6vw, 2.2rem); }
+        #timer .label { font-size: clamp(0.7rem, 2.5vw, 0.9rem); font-family: 'Poppins', sans-serif; text-transform: uppercase; color: #ccc; }
 
         /* --- SECÇÃO DA LUA --- */
-        .moon-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .moon-emoji {
-            font-size: 120px;
-            filter: drop-shadow(0 0 15px #ffffff);
-            line-height: 1;
-            margin: 0;
-        }
-
-        .moon-phase-name {
-            margin-top: 10px;
-            font-size: 1.2em;
-            font-style: italic;
-            color: var(--cor-destaque);
-        }
+        .moon-container { display: flex; flex-direction: column; align-items: center; }
+        .moon-emoji { font-size: 120px; filter: drop-shadow(0 0 15px #ffffff); line-height: 1; margin: 0; }
+        .moon-phase-name { margin-top: 10px; font-size: 1.2em; font-style: italic; color: var(--cor-destaque); }
 
         /* --- ESTATÍSTICAS DA JORNADA --- */
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+        .stats { display: flex; justify-content: space-around; width: 100%; flex-wrap: wrap; gap: 20px; }
+        .stat-item { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px; min-width: 220px; flex-grow: 1; border: 1px solid rgba(240, 230, 140, 0.2); }
 
-        .stat-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 10px;
-            min-width: 220px;
-            flex-grow: 1;
-            border: 1px solid rgba(240, 230, 140, 0.2);
-        }
+        /* --- JOGUINHO --- */
+        #game-section, #leaderboard-section { width: 100%; }
+        #game-canvas { border: 2px solid var(--cor-destaque); border-radius: 10px; cursor: pointer; width: 100%; max-width: 500px; box-sizing: border-box; }
+        #game-info { font-size: 1.2em; margin-top: 10px; display: flex; justify-content: space-around; width: 100%; max-width: 500px; }
+        #special-message { color: var(--cor-destaque); font-weight: bold; font-size: 1.3em; margin-top: 15px; height: 30px; transition: opacity 0.5s; }
+
+        /* --- LEADERBOARD --- */
+        #leaderboard { list-style: none; padding: 0; width: 100%; max-width: 400px; }
+        #leaderboard li { background: rgba(255, 255, 255, 0.05); margin-bottom: 8px; padding: 10px; border-radius: 8px; font-size: 1.2em; display: flex; justify-content: space-between; }
+        #leaderboard li span:first-child { font-weight: bold; color: var(--cor-destaque); }
+
+        /* --- MODAL GAME OVER --- */
+        #game-over-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .modal-content { background: var(--cor-fundo); padding: 40px; border-radius: 15px; border: 2px solid var(--cor-destaque); text-align: center; }
+        .modal-content h3 { font-size: 2em; color: var(--cor-destaque); margin-top: 0; }
+        .modal-content input { width: 80%; padding: 10px; margin-top: 20px; border-radius: 5px; border: 1px solid var(--cor-destaque); background: #333; color: white; font-size: 1em; }
+        .modal-content button { background-color: var(--cor-destaque); color: var(--cor-fundo); border: none; padding: 10px 20px; font-size: 1em; border-radius: 5px; cursor: pointer; margin-top: 20px; font-weight: bold; }
 
         /* --- CAIXA DE MENSAGEM --- */
-        .form-wrapper {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(240, 230, 140, 0.2);
-            border-radius: 15px;
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 500px;
-            box-sizing: border-box;
-        }
-
-        .form-wrapper h2 {
-            margin-top: 0;
-            padding-bottom: 15px;
-        }
-
-        #message-section iframe {
-            border: none;
-            box-shadow: none;
-            width: 100%;
-        }
+        .form-wrapper { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(240, 230, 140, 0.2); border-radius: 15px; padding: 30px 20px; width: 100%; max-width: 500px; box-sizing: border-box; }
+        .form-wrapper h2 { margin-top: 0; padding-bottom: 15px; }
+        #message-section iframe { border: none; box-shadow: none; width: 100%; }
 
         /* --- BOTÃO SECRETO E VÍDEO --- */
-        #secret-button {
-            background-color: var(--cor-vermelho);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 20px 40px;
-            font-size: 1.5em;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 6px var(--cor-vermelho-sombra);
-            transition: all 0.1s ease-out;
-        }
-
-        #secret-button:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px var(--cor-vermelho-sombra);
-        }
-
-        #video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        #video-container {
-            position: relative;
-            width: 90%;
-            max-width: 800px;
-        }
-        
-        #video-container video {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        #close-video {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 3em;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        #secret-button { background-color: var(--cor-vermelho); color: white; border: none; border-radius: 12px; padding: 20px 40px; font-size: 1.5em; font-weight: bold; cursor: pointer; box-shadow: 0 6px var(--cor-vermelho-sombra); transition: all 0.1s ease-out; }
+        #secret-button:active { transform: translateY(4px); box-shadow: 0 2px var(--cor-vermelho-sombra); }
+        #video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        #video-container { position: relative; width: 90%; max-width: 800px; }
+        #video-container video { width: 100%; border-radius: 10px; }
+        #close-video { position: absolute; top: -40px; right: 0; color: white; font-size: 3em; font-weight: bold; cursor: pointer; }
 
         /* --- RODAPÉ --- */
-        footer {
-            padding: 30px;
-            margin-top: 50px;
-            font-style: italic;
-            color: #aaa;
-        }
+        footer { padding: 30px; margin-top: 50px; font-style: italic; color: #aaa; }
     </style>
 </head>
 <body>
-    <!-- Canvas para o confete -->
     <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1001; pointer-events: none;"></canvas>
 
     <div class="star-background"></div>
@@ -338,31 +122,11 @@
 
         <section id="gallery-container" class="hidden">
             <div class="photo-gallery">
-                <!-- 
-                    COLOQUE AS SUAS FOTOS E VÍDEOS AQUI:
-                    - Para as fotos, troque os links "https://placehold.co/...".
-                    - Para os vídeos, troque os links "https://storage.googleapis.com/..." pelo link direto do seu vídeo.
-                -->
-                <!-- Foto 1 -->
-                <div class="photo-slide active">
-                    <img src="assets/mariex1.jpg" alt="Foto do casal 1">
-                </div>
-                <!-- Vídeo 1 -->
-                <div class="photo-slide">
-                    <video src="assets/mariex4.mp4" loop muted playsinline></video>
-                </div>
-                <!-- Foto 2 -->
-                <div class="photo-slide">
-                    <img src="assets/mariex2.jpg" alt="Foto do casal 2">
-                </div>
-                <!-- Vídeo 2 -->
-                <div class="photo-slide">
-                    <video src="assets/mariex5.mp4" loop muted playsinline></video>
-                </div>
-                <!-- Foto 3 -->
-                <div class="photo-slide">
-                    <img src="assets/mariex3.jpg" alt="Foto do casal 3">
-                </div>
+                <div class="photo-slide active"><img src="assets/mariex1.jpg" alt="Foto do casal 1"></div>
+                <div class="photo-slide"><video src="assets/mariex4.mp4" loop muted playsinline></video></div>
+                <div class="photo-slide"><img src="assets/mariex2.jpg" alt="Foto do casal 2"></div>
+                <div class="photo-slide"><video src="assets/mariex5.mp4" loop muted playsinline></video></div>
+                <div class="photo-slide"><img src="assets/mariex3.jpg" alt="Foto do casal 3"></div>
             </div>
             <div class="dots-container"></div>
         </section>
@@ -391,19 +155,26 @@
         <section id="journey-section" class="hidden">
             <h2>A nossa jornada pelo universo</h2>
             <div class="stats">
-                <div class="stat-item">
-                    <h3>Amanheceres Juntos</h3>
-                    <p id="sunrises">0</p>
-                </div>
-                <div class="stat-item">
-                    <h3>Luas Cheias que Vimos</h3>
-                    <p id="full-moons">0</p>
-                </div>
-                <div class="stat-item">
-                    <h3>Distância que a Terra viajou connosco</h3>
-                    <p><span id="distance">0</span> km</p>
-                </div>
+                <div class="stat-item"><h3>Amanheceres Juntos</h3><p id="sunrises">0</p></div>
+                <div class="stat-item"><h3>Luas Cheias que Vimos</h3><p id="full-moons">0</p></div>
+                <div class="stat-item"><h3>Distância que a Terra viajou connosco</h3><p><span id="distance">0</span> km</p></div>
             </div>
+        </section>
+
+        <section id="game-section" class="hidden">
+            <h2>Um joguinho para ti, meu amor</h2>
+            <p>Clica no ecrã para começar! Tens 30 segundos.</p>
+            <canvas id="game-canvas" width="500" height="400"></canvas>
+            <div id="game-info">
+                <span>Pontuação: <span id="score">0</span></span>
+                <span>Tempo: <span id="game-timer">30</span>s</span>
+            </div>
+            <div id="special-message"></div>
+        </section>
+
+        <section id="leaderboard-section" class="hidden">
+            <h2>Placar de Líderes</h2>
+            <ol id="leaderboard"></ol>
         </section>
 
         <section id="message-section" class="hidden">
@@ -413,7 +184,6 @@
             </div>
         </section>
 
-        <!-- Secção do Botão Secreto -->
         <section id="secret-section" class="hidden">
             <button id="secret-button">Não aperte!</button>
         </section>
@@ -423,7 +193,6 @@
         <p>Feito com cada batida do meu coração para si, Mariana. Amo-te!</p>
     </footer>
 
-    <!-- Overlay do Vídeo -->
     <div id="video-overlay">
         <div id="video-container">
             <span id="close-video">&times;</span>
@@ -431,187 +200,169 @@
         </div>
     </div>
 
-    <!-- Script do Tally -->
+    <div id="game-over-modal">
+        <div class="modal-content">
+            <h3>Fim de Jogo!</h3>
+            <p>A tua pontuação foi: <strong id="final-score">0</strong></p>
+            <input type="text" id="player-name" placeholder="Escreve o teu nome" maxlength="10">
+            <button id="save-score-btn">Salvar e Jogar de Novo</button>
+        </div>
+    </div>
+
     <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
-    
-    <!-- Script do Confete -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // --- ANIMAÇÃO DE ROLAGEM ---
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
+            // --- CÓDIGO EXISTENTE ---
+            const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('fade-in'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
             document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+            function createStars() { const container = document.querySelector('.star-background'); const starCount = 200; for (let i = 0; i < starCount; i++) { const star = document.createElement('div'); star.classList.add('star'); const size = Math.random() * 2.5 + 0.5; star.style.width = `${size}px`; star.style.height = star.style.width; star.style.top = `${Math.random() * 100}%`; star.style.left = `${Math.random() * 100}%`; star.style.animationDelay = `${Math.random() * 4}s`; star.style.animationDuration = `${Math.random() * 3 + 2}s`; container.appendChild(star); } } createStars();
+            const slides = document.querySelectorAll('.photo-slide'); if (slides.length > 0) { const dotsContainer = document.querySelector('.dots-container'); const gallery = document.querySelector('.photo-gallery'); let currentSlide = 0; let slideInterval; let startX = 0; slides.forEach((_, index) => { const dot = document.createElement('span'); dot.classList.add('dot'); if (index === 0) dot.classList.add('active'); dot.addEventListener('click', () => goToSlide(index)); dotsContainer.appendChild(dot); }); const dots = document.querySelectorAll('.dot'); function goToSlide(slideIndex) { const previousSlide = slides[currentSlide]; const videoInPrevious = previousSlide.querySelector('video'); if (videoInPrevious) { videoInPrevious.pause(); videoInPrevious.currentTime = 0; } previousSlide.classList.remove('active'); dots[currentSlide].classList.remove('active'); currentSlide = (slideIndex + slides.length) % slides.length; const newSlide = slides[currentSlide]; const videoInNew = newSlide.querySelector('video'); if (videoInNew) { videoInNew.muted = true; videoInNew.play().catch(error => console.log("Erro ao tentar tocar o vídeo:", error)); } newSlide.classList.add('active'); dots[currentSlide].classList.add('active'); resetInterval(); } function resetInterval() { clearInterval(slideInterval); slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000); } gallery.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; clearInterval(slideInterval); }, { passive: true }); gallery.addEventListener('touchend', (e) => { const endX = e.changedTouches[0].clientX; if (startX - endX > 50) { goToSlide(currentSlide + 1); } else if (endX - startX > 50) { goToSlide(currentSlide - 1); } else { resetInterval(); } }); resetInterval(); const firstVideo = slides[0].querySelector('video'); if (firstVideo) { firstVideo.muted = true; firstVideo.play().catch(error => console.log("Erro ao tentar tocar o vídeo inicial:", error)); } }
+            const startDate = new Date('2025-05-13T00:00:00'); function updateCounters() { const now = new Date(); let diff = now - startDate; if (diff < 0) diff = 0; const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24)); let tempDate = new Date(startDate); let years = now.getFullYear() - tempDate.getFullYear(); let months = now.getMonth() - tempDate.getMonth(); let days = now.getDate() - tempDate.getDate(); if (days < 0) { months--; const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0); days += prevMonth.getDate(); } if (months < 0) { years--; months += 12; } if (diff === 0) { years = 0; months = 0; days = 0; } const s = Math.floor(diff / 1000) % 60; const m = Math.floor(diff / (1000 * 60)) % 60; const h = Math.floor(diff / (1000 * 60 * 60)) % 24; document.getElementById('years').innerText = years; document.getElementById('months').innerText = months; document.getElementById('days').innerText = days; document.getElementById('hours').innerText = h.toString().padStart(2, '0'); document.getElementById('minutes').innerText = m.toString().padStart(2, '0'); document.getElementById('seconds').innerText = s.toString().padStart(2, '0'); document.getElementById('sunrises').innerText = totalDays.toLocaleString('pt-BR'); const fullMoonDates = [ new Date('2025-05-12'), new Date('2025-06-11'), new Date('2025-07-10') ]; const fullMoonsWitnessed = fullMoonDates.filter(d => d > startDate && d < now).length; document.getElementById('full-moons').innerText = fullMoonsWitnessed; const earthSpeedKms = 29.78; const totalSeconds = diff / 1000; const distanceTraveled = totalSeconds * earthSpeedKms; document.getElementById('distance').innerText = Math.round(distanceTraveled).toLocaleString('pt-BR'); } setInterval(updateCounters, 1000); updateCounters();
+            const secretButton = document.getElementById('secret-button'); const videoOverlay = document.getElementById('video-overlay'); const secretVideo = document.getElementById('secret-video'); const closeVideoButton = document.getElementById('close-video'); function fireConfetti() { const canvas = document.getElementById('confetti-canvas'); const myConfetti = confetti.create(canvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); } secretButton.addEventListener('click', function() { fireConfetti(); videoOverlay.style.display = 'flex'; secretVideo.muted = false; secretVideo.play().catch(error => { console.log("Autoplay com som falhou, tentando mudo. Erro:", error); secretVideo.muted = true; secretVideo.play(); }); }); closeVideoButton.addEventListener('click', function() { videoOverlay.style.display = 'none'; secretVideo.pause(); secretVideo.currentTime = 0; });
 
-            // --- FUNDO ESTRELADO ---
-            function createStars() {
-                const container = document.querySelector('.star-background');
-                const starCount = 200;
-                for (let i = 0; i < starCount; i++) {
-                    const star = document.createElement('div');
-                    star.classList.add('star');
-                    const size = Math.random() * 2.5 + 0.5;
-                    star.style.width = `${size}px`;
-                    star.style.height = star.style.width;
-                    star.style.top = `${Math.random() * 100}%`;
-                    star.style.left = `${Math.random() * 100}%`;
-                    star.style.animationDelay = `${Math.random() * 4}s`;
-                    star.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                    container.appendChild(star);
-                }
+            // --- CÓDIGO DO JOGO COM LEADERBOARD ---
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+            const scoreEl = document.getElementById('score');
+            const timerEl = document.getElementById('game-timer');
+            const specialMessageEl = document.getElementById('special-message');
+            const gameOverModal = document.getElementById('game-over-modal');
+            const finalScoreEl = document.getElementById('final-score');
+            const playerNameInput = document.getElementById('player-name');
+            const saveScoreBtn = document.getElementById('save-score-btn');
+            const leaderboardEl = document.getElementById('leaderboard');
+            
+            let score, fallingObjects, gameInterval, spawnInterval, timeLeft, gameActive;
+
+            function initGame() {
+                score = 0;
+                timeLeft = 30;
+                gameActive = false;
+                fallingObjects = [];
+                scoreEl.textContent = score;
+                timerEl.textContent = timeLeft;
+                specialMessageEl.textContent = "";
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = '20px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText('Clica aqui para começar!', canvas.width / 2, canvas.height / 2);
             }
-            createStars();
 
-            // --- GALERIA DE FOTOS E VÍDEOS (CARROSSEL) ---
-            const slides = document.querySelectorAll('.photo-slide');
-            if (slides.length > 0) {
-                const dotsContainer = document.querySelector('.dots-container');
-                const gallery = document.querySelector('.photo-gallery');
-                let currentSlide = 0;
-                let slideInterval;
-                let startX = 0;
-
-                slides.forEach((_, index) => {
-                    const dot = document.createElement('span');
-                    dot.classList.add('dot');
-                    if (index === 0) dot.classList.add('active');
-                    dot.addEventListener('click', () => goToSlide(index));
-                    dotsContainer.appendChild(dot);
-                });
-                const dots = document.querySelectorAll('.dot');
-
-                function goToSlide(slideIndex) {
-                    const previousSlide = slides[currentSlide];
-                    const videoInPrevious = previousSlide.querySelector('video');
-                    if (videoInPrevious) {
-                        videoInPrevious.pause();
-                        videoInPrevious.currentTime = 0;
-                    }
-
-                    previousSlide.classList.remove('active');
-                    dots[currentSlide].classList.remove('active');
-                    
-                    currentSlide = (slideIndex + slides.length) % slides.length;
-
-                    const newSlide = slides[currentSlide];
-                    const videoInNew = newSlide.querySelector('video');
-                    if (videoInNew) {
-                        videoInNew.muted = true;
-                        videoInNew.play().catch(error => console.log("Erro ao tentar tocar o vídeo:", error));
-                    }
-
-                    newSlide.classList.add('active');
-                    dots[currentSlide].classList.add('active');
-                    resetInterval();
-                }
-
-                function resetInterval() {
-                    clearInterval(slideInterval);
-                    slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
-                }
-
-                gallery.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                    clearInterval(slideInterval);
-                }, { passive: true });
-
-                gallery.addEventListener('touchend', (e) => {
-                    const endX = e.changedTouches[0].clientX;
-                    if (startX - endX > 50) {
-                        goToSlide(currentSlide + 1);
-                    } else if (endX - startX > 50) {
-                        goToSlide(currentSlide - 1);
-                    } else {
-                        resetInterval();
-                    }
-                });
+            function startGame() {
+                if (gameActive) return;
+                gameActive = true;
+                score = 0;
+                timeLeft = 30;
+                scoreEl.textContent = score;
+                timerEl.textContent = timeLeft;
+                fallingObjects = [];
                 
-                resetInterval();
-                const firstVideo = slides[0].querySelector('video');
-                if (firstVideo) {
-                    firstVideo.muted = true;
-                    firstVideo.play().catch(error => console.log("Erro ao tentar tocar o vídeo inicial:", error));
+                gameInterval = setInterval(() => {
+                    timeLeft--;
+                    timerEl.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+                }, 1000);
+
+                spawnInterval = setInterval(spawnObject, 800);
+                updateGame();
+            }
+
+            function endGame() {
+                gameActive = false;
+                clearInterval(gameInterval);
+                clearInterval(spawnInterval);
+                finalScoreEl.textContent = score;
+                gameOverModal.style.display = 'flex';
+            }
+
+            function saveScore() {
+                const name = playerNameInput.value.trim() || 'Anónimo';
+                const scores = JSON.parse(localStorage.getItem('leaderboardScores')) || [];
+                scores.push({ name, score });
+                scores.sort((a, b) => b.score - a.score);
+                localStorage.setItem('leaderboardScores', JSON.stringify(scores.slice(0, 5)));
+                displayLeaderboard();
+                gameOverModal.style.display = 'none';
+                initGame();
+            }
+
+            function displayLeaderboard() {
+                leaderboardEl.innerHTML = '';
+                const scores = JSON.parse(localStorage.getItem('leaderboardScores')) || [];
+                if (scores.length === 0) {
+                    leaderboardEl.innerHTML = '<li>Ainda ninguém jogou!</li>';
+                } else {
+                    scores.forEach(s => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span>${s.name}</span> <span>${s.score}</span>`;
+                        leaderboardEl.appendChild(li);
+                    });
                 }
             }
 
-            // --- CRONÓMETRO E CÁLCULOS ASTRONÓMICOS ---
-            const startDate = new Date('2025-05-13T00:00:00');
-            function updateCounters() {
-                const now = new Date();
-                let diff = now - startDate;
-                if (diff < 0) diff = 0; 
-                const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-                let tempDate = new Date(startDate);
-                let years = now.getFullYear() - tempDate.getFullYear();
-                let months = now.getMonth() - tempDate.getMonth();
-                let days = now.getDate() - tempDate.getDate();
-                if (days < 0) { months--; const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0); days += prevMonth.getDate(); }
-                if (months < 0) { years--; months += 12; }
-                if (diff === 0) { years = 0; months = 0; days = 0; }
-                const s = Math.floor(diff / 1000) % 60;
-                const m = Math.floor(diff / (1000 * 60)) % 60;
-                const h = Math.floor(diff / (1000 * 60 * 60)) % 24;
-                document.getElementById('years').innerText = years;
-                document.getElementById('months').innerText = months;
-                document.getElementById('days').innerText = days;
-                document.getElementById('hours').innerText = h.toString().padStart(2, '0');
-                document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
-                document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
-                document.getElementById('sunrises').innerText = totalDays.toLocaleString('pt-BR');
-                const fullMoonDates = [ new Date('2025-05-12'), new Date('2025-06-11'), new Date('2025-07-10') ];
-                const fullMoonsWitnessed = fullMoonDates.filter(d => d > startDate && d < now).length;
-                document.getElementById('full-moons').innerText = fullMoonsWitnessed;
-                const earthSpeedKms = 29.78;
-                const totalSeconds = diff / 1000;
-                const distanceTraveled = totalSeconds * earthSpeedKms;
-                document.getElementById('distance').innerText = Math.round(distanceTraveled).toLocaleString('pt-BR');
-            }
-            setInterval(updateCounters, 1000);
-            updateCounters();
-
-            // --- CÓDIGO PARA O BOTÃO SECRETO ---
-            const secretButton = document.getElementById('secret-button');
-            const videoOverlay = document.getElementById('video-overlay');
-            const secretVideo = document.getElementById('secret-video');
-            const closeVideoButton = document.getElementById('close-video');
-
-            function fireConfetti() {
-                const canvas = document.getElementById('confetti-canvas');
-                const myConfetti = confetti.create(canvas, {
-                    resize: true,
-                    useWorker: true
-                });
-                myConfetti({
-                    particleCount: 150,
-                    spread: 180,
-                    origin: { y: 0.6 }
-                });
+            function spawnObject() {
+                const isHeart = Math.random() < 0.15;
+                const x = Math.random() * (canvas.width - 30);
+                const speed = 1 + Math.random() * 2;
+                if (isHeart) { fallingObjects.push({ x: x, y: -30, speed: speed, type: 'heart', size: 30 }); } 
+                else { fallingObjects.push({ x: x, y: -20, speed: speed, type: 'star', size: 20 + Math.random() * 10 }); }
             }
 
-            secretButton.addEventListener('click', function() {
-                fireConfetti();
-                videoOverlay.style.display = 'flex';
-                secretVideo.muted = false;
-                secretVideo.play().catch(error => {
-                    console.log("Autoplay com som falhou, tentando mudo. Erro:", error);
-                    secretVideo.muted = true;
-                    secretVideo.play();
-                });
+            function drawStar(x, y, size) {
+                ctx.fillStyle = '#f0e68c'; ctx.shadowBlur = 10; ctx.shadowColor = '#f0e68c';
+                ctx.beginPath(); ctx.moveTo(x, y);
+                for (let i = 0; i < 5; i++) { ctx.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * size + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * size + y); ctx.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * (size/2) + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * (size/2) + y); }
+                ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0;
+            }
+
+            function drawHeart(x, y, size) {
+                ctx.fillStyle = '#e74c3c'; ctx.shadowBlur = 10; ctx.shadowColor = '#e74c3c';
+                ctx.beginPath(); const d = Math.min(size, size); const k = x; const l = y; ctx.moveTo(k, l + d / 4); ctx.quadraticCurveTo(k, l, k + d / 4, l); ctx.quadraticCurveTo(k + d / 2, l, k + d / 2, l + d / 4); ctx.quadraticCurveTo(k + d / 2, l, k + d * 3/4, l); ctx.quadraticCurveTo(k + d, l, k + d, l + d / 4); ctx.quadraticCurveTo(k + d, l + d / 2, k + d * 3/4, l + d * 3/4); ctx.lineTo(k + d / 2, l + d); ctx.lineTo(k + d / 4, l + d * 3/4); ctx.quadraticCurveTo(k, l + d / 2, k, l + d / 4); ctx.fill(); ctx.shadowBlur = 0;
+            }
+
+            function updateGame() {
+                if (!gameActive) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                    let obj = fallingObjects[i];
+                    obj.y += obj.speed;
+                    if (obj.type === 'star') { drawStar(obj.x, obj.y, obj.size / 2); } 
+                    else { drawHeart(obj.x, obj.y, obj.size); }
+                    if (obj.y > canvas.height + 40) { fallingObjects.splice(i, 1); }
+                }
+                requestAnimationFrame(updateGame);
+            }
+
+            canvas.addEventListener('click', function(event) {
+                if (!gameActive) {
+                    startGame();
+                    return;
+                }
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                    let obj = fallingObjects[i];
+                    if (x >= obj.x - obj.size/2 && x <= obj.x + obj.size && y >= obj.y - obj.size/2 && y <= obj.y + obj.size) {
+                        if (obj.type === 'star') { score += 10; } 
+                        else { score += 50; specialMessageEl.textContent = "Apanhaste o meu coração! ❤️"; specialMessageEl.style.opacity = 1; setTimeout(() => { specialMessageEl.style.opacity = 0; }, 2000); }
+                        scoreEl.textContent = score;
+                        fallingObjects.splice(i, 1);
+                        break;
+                    }
+                }
             });
 
-            closeVideoButton.addEventListener('click', function() {
-                videoOverlay.style.display = 'none';
-                secretVideo.pause();
-                secretVideo.currentTime = 0;
-            });
+            saveScoreBtn.addEventListener('click', saveScore);
+            
+            // Inicialização
+            initGame();
+            displayLeaderboard();
         });
     </script>
 </body>
