@@ -213,47 +213,20 @@
     <script type="module">
         // Importações do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Script do Tally
         var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}
         
-        // Script do Confete (carregado dinamicamente para ser módulo)
+        // Script do Confete
         const confettiScript = document.createElement('script');
         confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js";
         document.head.appendChild(confettiScript);
 
-        document.addEventListener('DOMContentLoaded', async function() {
-            // --- INICIALIZAÇÃO DO FIREBASE ---
-            let db;
-            try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'homenagem-mariana';
-                const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
-                const firebaseConfig = JSON.parse(firebaseConfigStr);
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                const auth = getAuth(app);
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                console.log("Firebase inicializado e autenticado.");
-                listenToLeaderboard(); // Inicia o listener do placar
-            } catch (e) {
-                console.error("Erro ao inicializar o Firebase. O placar online não funcionará.", e);
-            }
-
-            // --- CÓDIGO EXISTENTE ---
-            const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('fade-in'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
-            document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
-            function createStars() { const container = document.querySelector('.star-background'); const starCount = 200; for (let i = 0; i < starCount; i++) { const star = document.createElement('div'); star.classList.add('star'); const size = Math.random() * 2.5 + 0.5; star.style.width = `${size}px`; star.style.height = star.style.width; star.style.top = `${Math.random() * 100}%`; star.style.left = `${Math.random() * 100}%`; star.style.animationDelay = `${Math.random() * 4}s`; star.style.animationDuration = `${Math.random() * 3 + 2}s`; container.appendChild(star); } } createStars();
-            const slides = document.querySelectorAll('.photo-slide'); if (slides.length > 0) { const dotsContainer = document.querySelector('.dots-container'); const gallery = document.querySelector('.photo-gallery'); let currentSlide = 0; let slideInterval; let startX = 0; slides.forEach((_, index) => { const dot = document.createElement('span'); dot.classList.add('dot'); if (index === 0) dot.classList.add('active'); dot.addEventListener('click', () => goToSlide(index)); dotsContainer.appendChild(dot); }); const dots = document.querySelectorAll('.dot'); function goToSlide(slideIndex) { const previousSlide = slides[currentSlide]; const videoInPrevious = previousSlide.querySelector('video'); if (videoInPrevious) { videoInPrevious.pause(); videoInPrevious.currentTime = 0; } previousSlide.classList.remove('active'); dots[currentSlide].classList.remove('active'); currentSlide = (slideIndex + slides.length) % slides.length; const newSlide = slides[currentSlide]; const videoInNew = newSlide.querySelector('video'); if (videoInNew) { videoInNew.muted = true; videoInNew.play().catch(error => console.log("Erro ao tentar tocar o vídeo:", error)); } newSlide.classList.add('active'); dots[currentSlide].classList.add('active'); resetInterval(); } function resetInterval() { clearInterval(slideInterval); slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000); } gallery.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; clearInterval(slideInterval); }, { passive: true }); gallery.addEventListener('touchend', (e) => { const endX = e.changedTouches[0].clientX; if (startX - endX > 50) { goToSlide(currentSlide + 1); } else if (endX - startX > 50) { goToSlide(currentSlide - 1); } else { resetInterval(); } }); resetInterval(); const firstVideo = slides[0].querySelector('video'); if (firstVideo) { firstVideo.muted = true; firstVideo.play().catch(error => console.log("Erro ao tentar tocar o vídeo inicial:", error)); } }
-            const startDate = new Date('2025-05-13T00:00:00'); function updateCounters() { const now = new Date(); let diff = now - startDate; if (diff < 0) diff = 0; const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24)); let tempDate = new Date(startDate); let years = now.getFullYear() - tempDate.getFullYear(); let months = now.getMonth() - tempDate.getMonth(); let days = now.getDate() - tempDate.getDate(); if (days < 0) { months--; const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0); days += prevMonth.getDate(); } if (months < 0) { years--; months += 12; } if (diff === 0) { years = 0; months = 0; days = 0; } const s = Math.floor(diff / 1000) % 60; const m = Math.floor(diff / (1000 * 60)) % 60; const h = Math.floor(diff / (1000 * 60 * 60)) % 24; document.getElementById('years').innerText = years; document.getElementById('months').innerText = months; document.getElementById('days').innerText = days; document.getElementById('hours').innerText = h.toString().padStart(2, '0'); document.getElementById('minutes').innerText = m.toString().padStart(2, '0'); document.getElementById('seconds').innerText = s.toString().padStart(2, '0'); document.getElementById('sunrises').innerText = totalDays.toLocaleString('pt-BR'); const fullMoonDates = [ new Date('2025-05-12'), new Date('2025-06-11'), new Date('2025-07-10') ]; const fullMoonsWitnessed = fullMoonDates.filter(d => d > startDate && d < now).length; document.getElementById('full-moons').innerText = fullMoonsWitnessed; const earthSpeedKms = 29.78; const totalSeconds = diff / 1000; const distanceTraveled = totalSeconds * earthSpeedKms; document.getElementById('distance').innerText = Math.round(distanceTraveled).toLocaleString('pt-BR'); } setInterval(updateCounters, 1000); updateCounters();
-            const secretButton = document.getElementById('secret-button'); const videoOverlay = document.getElementById('video-overlay'); const secretVideo = document.getElementById('secret-video'); const closeVideoButton = document.getElementById('close-video'); function fireConfetti() { if(typeof confetti !== 'undefined') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); } } secretButton.addEventListener('click', function() { fireConfetti(); videoOverlay.style.display = 'flex'; secretVideo.muted = false; secretVideo.play().catch(error => { console.log("Autoplay com som falhou, tentando mudo. Erro:", error); secretVideo.muted = true; secretVideo.play(); }); }); closeVideoButton.addEventListener('click', function() { videoOverlay.style.display = 'none'; secretVideo.pause(); secretVideo.currentTime = 0; });
-
-            // --- JOGO COM LEADERBOARD GLOBAL E CORREÇÃO PARA CELULAR ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DECLARAÇÃO DE ELEMENTOS NO INÍCIO ---
+            const leaderboardEl = document.getElementById('leaderboard');
             const canvas = document.getElementById('game-canvas');
             const ctx = canvas.getContext('2d');
             const scoreEl = document.getElementById('score');
@@ -263,9 +236,64 @@
             const finalScoreEl = document.getElementById('final-score');
             const playerNameInput = document.getElementById('player-name');
             const saveScoreBtn = document.getElementById('save-score-btn');
-            const leaderboardEl = document.getElementById('leaderboard');
+            const secretButton = document.getElementById('secret-button');
+            const videoOverlay = document.getElementById('video-overlay');
+            const secretVideo = document.getElementById('secret-video');
+            const closeVideoButton = document.getElementById('close-video');
+
+            // --- FUNÇÃO DE INICIALIZAÇÃO DO FIREBASE ---
+            async function initializeFirebase() {
+                try {
+                    // As suas chaves do Firebase
+                    const firebaseConfig = {
+                      apiKey: "AIzaSyCAZhHTbSY8fWgE4G-qW_LFv0dq-HoRmnE",
+                      authDomain: "mariex-9672c.firebaseapp.com",
+                      projectId: "mariex-9672c",
+                      storageBucket: "mariex-9672c.appspot.com",
+                      messagingSenderId: "608728579141",
+                      appId: "1:608728579141:web:596f4a7b8f8be69b5ef72c",
+                      measurementId: "G-R88XSH8RH2"
+                    };
+                    
+                    // INSTRUÇÃO IMPORTANTE PARA O GITHUB PAGES:
+                    // 1. No seu painel do Firebase, vá para "Authentication" -> "Sign-in method" e ATIVE o provedor "Anônimo".
+                    // 2. No mesmo sítio, em "Authentication" -> "Settings" -> "Authorized domains", adicione o seu domínio do GitHub (ex: seunome.github.io).
+                    // 3. Vá para "Firestore Database" -> "Regras" e cole o seguinte, depois clique em "Publicar":
+                    // rules_version = '2';
+                    // service cloud.firestore {
+                    //   match /databases/{database}/documents {
+                    //     match /leaderboard/{docId} {
+                    //       allow read, write: if true;
+                    //     }
+                    //   }
+                    // }
+
+                    const app = initializeApp(firebaseConfig);
+                    const db = getFirestore(app);
+                    const auth = getAuth(app);
+                    await signInAnonymously(auth);
+                    console.log("Firebase inicializado com a sua configuração.");
+                    listenToLeaderboard(db); // Passa a instância `db`
+                } catch (e) {
+                    console.error("Erro ao inicializar o Firebase. Verifique a sua configuração e as regras no painel do Firebase.", e);
+                    if(leaderboardEl) leaderboardEl.innerHTML = '<li>O placar online não pôde ser carregado.</li>';
+                }
+            }
+
+            // --- CÓDIGO RESTANTE ---
+            const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('fade-in'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
+            document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+            function createStars() { const container = document.querySelector('.star-background'); const starCount = 200; for (let i = 0; i < starCount; i++) { const star = document.createElement('div'); star.classList.add('star'); const size = Math.random() * 2.5 + 0.5; star.style.width = `${size}px`; star.style.height = star.style.width; star.style.top = `${Math.random() * 100}%`; star.style.left = `${Math.random() * 100}%`; star.style.animationDelay = `${Math.random() * 4}s`; star.style.animationDuration = `${Math.random() * 3 + 2}s`; container.appendChild(star); } } createStars();
+            const slides = document.querySelectorAll('.photo-slide'); if (slides.length > 0) { const dotsContainer = document.querySelector('.dots-container'); const gallery = document.querySelector('.photo-gallery'); let currentSlide = 0; let slideInterval; let startX = 0; slides.forEach((_, index) => { const dot = document.createElement('span'); dot.classList.add('dot'); if (index === 0) dot.classList.add('active'); dot.addEventListener('click', () => goToSlide(index)); dotsContainer.appendChild(dot); }); const dots = document.querySelectorAll('.dot'); function goToSlide(slideIndex) { const previousSlide = slides[currentSlide]; const videoInPrevious = previousSlide.querySelector('video'); if (videoInPrevious) { videoInPrevious.pause(); videoInPrevious.currentTime = 0; } previousSlide.classList.remove('active'); dots[currentSlide].classList.remove('active'); currentSlide = (slideIndex + slides.length) % slides.length; const newSlide = slides[currentSlide]; const videoInNew = newSlide.querySelector('video'); if (videoInNew) { videoInNew.muted = true; videoInNew.play().catch(error => console.log("Erro ao tentar tocar o vídeo:", error)); } newSlide.classList.add('active'); dots[currentSlide].classList.add('active'); resetInterval(); } function resetInterval() { clearInterval(slideInterval); slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000); } gallery.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; clearInterval(slideInterval); }, { passive: true }); gallery.addEventListener('touchend', (e) => { const endX = e.changedTouches[0].clientX; if (startX - endX > 50) { goToSlide(currentSlide + 1); } else if (endX - startX > 50) { goToSlide(currentSlide - 1); } else { resetInterval(); } }); resetInterval(); const firstVideo = slides[0].querySelector('video'); if (firstVideo) { firstVideo.muted = true; firstVideo.play().catch(error => console.log("Erro ao tentar tocar o vídeo inicial:", error)); } }
+            const startDate = new Date('2025-05-13T00:00:00'); function updateCounters() { const now = new Date(); let diff = now - startDate; if (diff < 0) diff = 0; const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24)); let tempDate = new Date(startDate); let years = now.getFullYear() - tempDate.getFullYear(); let months = now.getMonth() - tempDate.getMonth(); let days = now.getDate() - tempDate.getDate(); if (days < 0) { months--; const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0); days += prevMonth.getDate(); } if (months < 0) { years--; months += 12; } if (diff === 0) { years = 0; months = 0; days = 0; } const s = Math.floor(diff / 1000) % 60; const m = Math.floor(diff / (1000 * 60)) % 60; const h = Math.floor(diff / (1000 * 60 * 60)) % 24; document.getElementById('years').innerText = years; document.getElementById('months').innerText = months; document.getElementById('days').innerText = days; document.getElementById('hours').innerText = h.toString().padStart(2, '0'); document.getElementById('minutes').innerText = m.toString().padStart(2, '0'); document.getElementById('seconds').innerText = s.toString().padStart(2, '0'); document.getElementById('sunrises').innerText = totalDays.toLocaleString('pt-BR'); const fullMoonDates = [ new Date('2025-05-12'), new Date('2025-06-11'), new Date('2025-07-10') ]; const fullMoonsWitnessed = fullMoonDates.filter(d => d > startDate && d < now).length; document.getElementById('full-moons').innerText = fullMoonsWitnessed; const earthSpeedKms = 29.78; const totalSeconds = diff / 1000; const distanceTraveled = totalSeconds * earthSpeedKms; document.getElementById('distance').innerText = Math.round(distanceTraveled).toLocaleString('pt-BR'); } setInterval(updateCounters, 1000); updateCounters();
+            function fireConfetti() { if(typeof confetti !== 'undefined') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); } } secretButton.addEventListener('click', function() { fireConfetti(); videoOverlay.style.display = 'flex'; secretVideo.muted = false; secretVideo.play().catch(error => { console.log("Autoplay com som falhou, tentando mudo. Erro:", error); secretVideo.muted = true; secretVideo.play(); }); }); closeVideoButton.addEventListener('click', function() { videoOverlay.style.display = 'none'; secretVideo.pause(); secretVideo.currentTime = 0; });
+
+            // --- JOGO COM LEADERBOARD GLOBAL E CORREÇÃO PARA CELULAR ---
+            let score, fallingObjects, gameInterval, spawnInterval, timeLeft, gameActive, dbInstance;
             
-            let score, fallingObjects, gameInterval, spawnInterval, timeLeft, gameActive;
+            initializeFirebase().then(db => {
+                dbInstance = db;
+            });
 
             function initGame() {
                 score = 0; timeLeft = 30; gameActive = false; fallingObjects = [];
@@ -294,20 +322,16 @@
                 const name = playerNameInput.value.trim() || 'Anónimo';
                 if (db) {
                     try {
-                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'homenagem-mariana';
-                        const leaderboardCol = collection(db, `artifacts/${appId}/public/data/leaderboard`);
-                        await addDoc(leaderboardCol, { name, score, createdAt: new Date() });
+                        await addDoc(collection(db, 'leaderboard'), { name, score, createdAt: new Date() });
                     } catch (error) { console.error("Erro ao salvar pontuação: ", error); }
                 }
                 gameOverModal.style.display = 'none';
                 initGame();
             }
 
-            function listenToLeaderboard() {
+            function listenToLeaderboard(db) {
                 if (!db) { leaderboardEl.innerHTML = '<li>Placar online indisponível.</li>'; return; }
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'homenagem-mariana';
-                const leaderboardCol = collection(db, `artifacts/${appId}/public/data/leaderboard`);
-                const q = query(leaderboardCol);
+                const q = query(collection(db, 'leaderboard'));
                 onSnapshot(q, (snapshot) => {
                     const scores = [];
                     snapshot.forEach(doc => scores.push(doc.data()));
@@ -328,10 +352,6 @@
                 });
             }
 
-            function spawnObject() { /* ...código de spawn... */ }
-            function drawStar(x, y, size) { /* ...código de desenho... */ }
-            function drawHeart(x, y, size) { /* ...código de desenho... */ }
-            // Funções de desenho omitidas para brevidade, são as mesmas
             function spawnObject() { const isHeart = Math.random() < 0.15; const x = Math.random() * (canvas.width - 30); const speed = 1 + Math.random() * 2; if (isHeart) { fallingObjects.push({ x, y: -30, speed, type: 'heart', size: 30 }); } else { fallingObjects.push({ x, y: -20, speed, type: 'star', size: 20 + Math.random() * 10 }); } }
             function drawStar(x, y, size) { ctx.fillStyle = '#f0e68c'; ctx.shadowBlur = 10; ctx.shadowColor = '#f0e68c'; ctx.beginPath(); ctx.moveTo(x, y); for (let i = 0; i < 5; i++) { ctx.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * size + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * size + y); ctx.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * (size/2) + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * (size/2) + y); } ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0; }
             function drawHeart(x, y, size) { ctx.fillStyle = '#e74c3c'; ctx.shadowBlur = 10; ctx.shadowColor = '#e74c3c'; ctx.beginPath(); const d = Math.min(size, size); const k = x; const l = y; ctx.moveTo(k, l + d / 4); ctx.quadraticCurveTo(k, l, k + d / 4, l); ctx.quadraticCurveTo(k + d / 2, l, k + d / 2, l + d / 4); ctx.quadraticCurveTo(k + d / 2, l, k + d * 3/4, l); ctx.quadraticCurveTo(k + d, l, k + d, l + d / 4); ctx.quadraticCurveTo(k + d, l + d / 2, k + d * 3/4, l + d * 3/4); ctx.lineTo(k + d / 2, l + d); ctx.lineTo(k + d / 4, l + d * 3/4); ctx.quadraticCurveTo(k, l + d / 2, k, l + d / 4); ctx.fill(); ctx.shadowBlur = 0; }
@@ -349,7 +369,6 @@
                 requestAnimationFrame(updateGame);
             }
             
-            // CORREÇÃO PARA CELULAR (TOUCH)
             function handleInteraction(event) {
                 event.preventDefault();
                 if (!gameActive) {
@@ -377,7 +396,6 @@
             saveScoreBtn.addEventListener('click', saveScore);
             
             initGame();
-            // A chamada para listenToLeaderboard() agora está no bloco de inicialização do Firebase
         });
     </script>
 </body>
