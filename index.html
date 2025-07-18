@@ -224,7 +224,7 @@
         confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js";
         document.head.appendChild(confettiScript);
 
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             // --- DECLARAÇÃO DE ELEMENTOS NO INÍCIO ---
             const leaderboardEl = document.getElementById('leaderboard');
             const canvas = document.getElementById('game-canvas');
@@ -241,15 +241,13 @@
             const secretVideo = document.getElementById('secret-video');
             const closeVideoButton = document.getElementById('close-video');
 
-            // --- CORREÇÃO: Variável `db` declarada num escopo mais alto ---
             let db;
 
             // --- FUNÇÃO DE INICIALIZAÇÃO DO FIREBASE ---
             async function initializeFirebase() {
                 try {
-                    // As suas chaves do Firebase
                     const firebaseConfig = {
-                      apiKey: "AIzaSyCAZhHTbSY8fWgE4G-qW_LFv0dq-HoRmnE", // CHAVE ATUALIZADA
+                      apiKey: "AIzaSyCAZhHTbSY8fWgE4G-qW_LFv0dq-HoRmnE",
                       authDomain: "mariex-9672c.firebaseapp.com",
                       projectId: "mariex-9672c",
                       storageBucket: "mariex-9672c.appspot.com",
@@ -258,21 +256,19 @@
                       measurementId: "G-R88XSH8RH2"
                     };
                     
-                    // INSTRUÇÃO IMPORTANTE PARA O GITHUB PAGES:
-                    // 1. No seu painel do Firebase, vá para "Authentication" -> "Sign-in method" e ATIVE o provedor "Anônimo".
-                    // 2. No mesmo sítio, em "Authentication" -> "Settings" -> "Authorized domains", adicione o seu domínio do GitHub (ex: seunome.github.io).
-                    // 3. Vá para "Firestore Database" -> "Regras" e cole o seguinte, depois clique em "Publicar":
-                    // rules_version = '2';
-                    // service cloud.firestore {
-                    //   match /databases/{database}/documents {
-                    //     match /leaderboard/{docId} {
-                    //       allow read, write: if true;
-                    //     }
-                    //   }
-                    // }
+                    // INSTRUÇÃO IMPORTANTE PARA CORRIGIR O ERRO `auth/requests-from-referer...are-blocked`:
+                    // 1. Vá para o seu painel do Firebase -> Authentication -> Settings -> Authorized domains.
+                    // 2. Clique em "Adicionar domínio".
+                    // 3. COPIE O DOMÍNIO DA MENSAGEM DE ERRO NA CONSOLA e cole-o lá.
+                    //    O domínio será algo como: 59ev3...usercontent.goog (copie o domínio exato do erro que vê).
+                    // 4. Adicione também o seu domínio do GitHub Pages (ex: seunome.github.io) para quando publicar o site.
+                    //
+                    // Lembre-se também de:
+                    // - Ativar o provedor "Anônimo" em "Authentication" -> "Sign-in method".
+                    // - Ativar a "Identity Platform API" (o link está no erro anterior).
+                    // - Configurar as "Regras" do "Firestore Database" para permitir leitura/escrita.
 
                     const app = initializeApp(firebaseConfig);
-                    // CORREÇÃO: Atribui a instância do Firestore à variável `db` de escopo mais alto
                     db = getFirestore(app);
                     const auth = getAuth(app);
                     await signInAnonymously(auth);
