@@ -224,7 +224,7 @@
         confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js";
         document.head.appendChild(confettiScript);
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             // --- DECLARAÇÃO DE ELEMENTOS NO INÍCIO ---
             const leaderboardEl = document.getElementById('leaderboard');
             const canvas = document.getElementById('game-canvas');
@@ -240,6 +240,9 @@
             const videoOverlay = document.getElementById('video-overlay');
             const secretVideo = document.getElementById('secret-video');
             const closeVideoButton = document.getElementById('close-video');
+
+            // --- CORREÇÃO: Variável `db` declarada num escopo mais alto ---
+            let db;
 
             // --- FUNÇÃO DE INICIALIZAÇÃO DO FIREBASE ---
             async function initializeFirebase() {
@@ -269,11 +272,12 @@
                     // }
 
                     const app = initializeApp(firebaseConfig);
-                    const db = getFirestore(app);
+                    // CORREÇÃO: Atribui a instância do Firestore à variável `db` de escopo mais alto
+                    db = getFirestore(app);
                     const auth = getAuth(app);
                     await signInAnonymously(auth);
                     console.log("Firebase inicializado com a sua configuração.");
-                    listenToLeaderboard(db); // Passa a instância `db`
+                    listenToLeaderboard();
                 } catch (e) {
                     console.error("Erro ao inicializar o Firebase. Verifique a sua configuração e as regras no painel do Firebase.", e);
                     if(leaderboardEl) leaderboardEl.innerHTML = '<li>O placar online não pôde ser carregado.</li>';
@@ -289,12 +293,8 @@
             function fireConfetti() { if(typeof confetti !== 'undefined') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); } } secretButton.addEventListener('click', function() { fireConfetti(); videoOverlay.style.display = 'flex'; secretVideo.muted = false; secretVideo.play().catch(error => { console.log("Autoplay com som falhou, tentando mudo. Erro:", error); secretVideo.muted = true; secretVideo.play(); }); }); closeVideoButton.addEventListener('click', function() { videoOverlay.style.display = 'none'; secretVideo.pause(); secretVideo.currentTime = 0; });
 
             // --- JOGO COM LEADERBOARD GLOBAL E CORREÇÃO PARA CELULAR ---
-            let score, fallingObjects, gameInterval, spawnInterval, timeLeft, gameActive, dbInstance;
+            let score, fallingObjects, gameInterval, spawnInterval, timeLeft, gameActive;
             
-            initializeFirebase().then(db => {
-                dbInstance = db;
-            });
-
             function initGame() {
                 score = 0; timeLeft = 30; gameActive = false; fallingObjects = [];
                 scoreEl.textContent = score; timerEl.textContent = timeLeft; specialMessageEl.textContent = "";
@@ -324,12 +324,14 @@
                     try {
                         await addDoc(collection(db, 'leaderboard'), { name, score, createdAt: new Date() });
                     } catch (error) { console.error("Erro ao salvar pontuação: ", error); }
+                } else {
+                    console.log("Base de dados não está pronta para salvar a pontuação.");
                 }
                 gameOverModal.style.display = 'none';
                 initGame();
             }
 
-            function listenToLeaderboard(db) {
+            function listenToLeaderboard() {
                 if (!db) { leaderboardEl.innerHTML = '<li>Placar online indisponível.</li>'; return; }
                 const q = query(collection(db, 'leaderboard'));
                 onSnapshot(q, (snapshot) => {
@@ -395,6 +397,8 @@
             canvas.addEventListener('touchstart', handleInteraction);
             saveScoreBtn.addEventListener('click', saveScore);
             
+            // --- INICIALIZAÇÃO GERAL ---
+            initializeFirebase();
             initGame();
         });
     </script>
