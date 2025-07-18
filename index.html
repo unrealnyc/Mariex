@@ -8,6 +8,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R88XSH8RH2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-R88XSH8RH2');
+    </script>
+
     <style>
         /* --- CONFIGURAÇÕES GERAIS E TEMA --- */
         :root {
@@ -247,7 +257,7 @@
             async function initializeFirebase() {
                 try {
                     const firebaseConfig = {
-                      apiKey: "AIzaSyCAZhHTbSY8fWgE4G-qW_LFv0dq-HoRmnE",
+                      apiKey: "AIzaSyB5W0inqFPvkCRK546_nEyzz2Yi1vi_AaU", // CHAVE ATUALIZADA
                       authDomain: "mariex-9672c.firebaseapp.com",
                       projectId: "mariex-9672c",
                       storageBucket: "mariex-9672c.appspot.com",
@@ -256,18 +266,6 @@
                       measurementId: "G-R88XSH8RH2"
                     };
                     
-                    // INSTRUÇÃO IMPORTANTE PARA CORRIGIR O ERRO `auth/requests-from-referer...are-blocked`:
-                    // 1. Vá para o seu painel do Firebase -> Authentication -> Settings -> Authorized domains.
-                    // 2. Clique em "Adicionar domínio".
-                    // 3. COPIE O DOMÍNIO DA MENSAGEM DE ERRO NA CONSOLA e cole-o lá.
-                    //    O domínio será algo como: 59ev3...usercontent.goog (copie o domínio exato do erro que vê).
-                    // 4. Adicione também o seu domínio do GitHub Pages (ex: seunome.github.io) para quando publicar o site.
-                    //
-                    // Lembre-se também de:
-                    // - Ativar o provedor "Anônimo" em "Authentication" -> "Sign-in method".
-                    // - Ativar a "Identity Platform API" (o link está no erro anterior).
-                    // - Configurar as "Regras" do "Firestore Database" para permitir leitura/escrita.
-
                     const app = initializeApp(firebaseConfig);
                     db = getFirestore(app);
                     const auth = getAuth(app);
